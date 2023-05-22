@@ -1,23 +1,36 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+
 using namespace std;
-int main(){
-    int n,q; cin >> n >> q;
-    vector<int> a(n);
-    for(int i = 0; i < n; i++){
-        cin >> a[i];
+
+int main() {
+    int n, q;
+    cin >> n >> q;
+
+    vector<int> heights(n);
+    for (int i = 0; i < n; i++) {
+        cin >> heights[i];
     }
 
-    while(q--){
-        int l, r; cin >> l >> r;
-        int hops = 1;
-        int cur = a[l-1];
-        
-        for(int i = l; i <= r; i++){
-            if(a[i-1] > cur){
-                cur = a[i-1];
-                hops++;
+    while (q--) {
+        int l, r;
+        cin >> l >> r;
+        l--; r--;
+
+        int count = 0;
+        int curr = l;
+        int next = l + 1;
+
+        while (next <= r) {
+            if (heights[next] > heights[curr]) {
+                count++;
+                curr = next;
             }
+            next++;
         }
-        cout << hops << endl;
+
+        cout << count << endl;
     }
+
+    return 0;
 }

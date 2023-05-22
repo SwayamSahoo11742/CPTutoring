@@ -1,34 +1,23 @@
-#include <iostream>
-#include <vector>
+#include <bits/stdc++.h>
 using namespace std;
-
-int countPermutations(int pos, vector<int>& nums, int l) {
-    if (pos == l) {
-        return 1;
-    }
-
-    int count = 0;
-
-    for (int i = 0; i < nums.size(); i++) {
-        if (nums[i] >= pos + 1) {
-            int num = nums[i];
-            nums.erase(nums.begin() + i);
-            count += countPermutations(pos + 1, nums, l);
-            nums.insert(nums.begin() + i, num);
-        }
-    }
-
-    return count;
-}
-
+const long long MOD = 1e9+7;
 int main() {
-    int n; std::cin >> n;
+    int n;
+    cin >> n;
     vector<int> a(n);
-    for(int i = 0; i <n; i++){
-        cin >> a[i];
+    for (int i = 0; i < n; i++) {
+        int x;
+        cin >> x;
+        a[i] = min(n, x);
     }
-    int result = countPermutations(0, a, n);
-    std::cout << result << std::endl;
+
+    long long perm = 1;
+
+    sort(a.begin(), a.end(), greater<>());
+    for(int i = 0; i < n; i++){
+        perm = (perm * (a[i] - (n-1-i))) % MOD;
+    }
+    cout << perm << endl;
 
     return 0;
 }

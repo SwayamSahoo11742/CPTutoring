@@ -23,10 +23,8 @@ int main(){
             for(int k = j; k <= b; k++){
                 if(k != j){
                     ans = max(ans, x[k-1] - x[j-1]);
-                    // cout << x[j-1] << " " << x[k-1] << endl;
                 }
             }
-            // cout << "-----------" << endl;
         }
 
         cout << ans << endl;

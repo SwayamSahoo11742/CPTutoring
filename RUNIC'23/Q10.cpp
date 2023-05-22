@@ -1,94 +1,62 @@
-#include <iostream>
-#include <unordered_map>
-#include <vector>
-#include <algorithm>
+#include <bits/stdc++.h>
 using namespace std;
+const int MAXN = 1+8;
 
-unordered_map<int, vector<int>> s1;
-unordered_map<int, vector<int>> s2;
-vector<int> f1;
-vector<int> f2;
+bool graph1 [MAXN][MAXN];
+bool graph2 [MAXN][MAXN];
 
-bool checkBranch(int a, int b) {
-    f1.push_back(a);
-    f2.push_back(b);
-
-    if (s1[a].size() != s2[b].size()) {
-        return false;
+// Bruteforce all the possible permutations of the given nodes
+// For each permutation, check if two graphs match
+void permutate(vector<int>& curr, vector<bool>& chosen, int& n, bool& ans){
+    if (ans) return;
+    if (curr.size() > n){
+        bool valid = true;
+        for (int i = 1; i <= n; i++){
+            for (int j = 1; j <= n; j++){
+                if (graph1[i][j] != graph2[curr[i]][curr[j]]){
+                    valid = false;
+                    break;
+                }
+            }
+            if (!valid) break;
+        }
+        if (valid) {
+            ans = valid;
+        }
     } else {
-        for (int i = 0; i < s1[a].size(); i++) {
-            if (!count(f1.begin(), f1.end(), s1[a][i])) {
-                int found = 0;
-                for (int j = 0; j < s2[b].size(); j++) {
-                    if (!count(f2.begin(), f2.end(), s2[b][j])) {
-                        if (s1[s1[a][i]].size() == s2[s2[b][j]].size()) {
-                            if (checkBranch(s1[a][i], s2[b][j])) {
-                                found = 1;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if (found == 0) {
-                    return false;
-                }
-            }
+        for (int i = 1; i <= n; i++){
+            if (chosen[i]) continue;
+            chosen[i] = true;
+            curr.push_back(i);
+            permutate(curr, chosen, n, ans);
+            chosen[i] = false;
+            curr.pop_back();
         }
     }
-
-    return true;
-}
-
-bool checkStructure() {
-    for (auto it = s1.begin(); it != s1.end(); ++it) {
-        if (it->second.size() == s2[it->first].size()) {
-            f1.clear(); // Clear the visited nodes for each branch
-            f2.clear(); // Clear the visited nodes for each branch
-
-            if (checkBranch(it->first, it->first)) { // Pass the same node for both trees
-                return true;
-            }
-        }
-    }
-
-    return false;
 }
 
 int main() {
-    int T;
-    cin >> T;
-
-    while (T--) {
-        int n, m;
+    int tests, a, b, n, m;
+    cin >> tests;
+    for (int t = 1; t <= tests; t++) {
         cin >> n >> m;
-
-        s1.clear();
-        s2.clear();
-
-        for (int i = 0; i < m; i++) {
-            int a, b;
+        for (int i = 1; i <= m; i++) {
             cin >> a >> b;
-            s1[a].push_back(b);
-            s1[b].push_back(a);
+            graph1[a][b] = true;
+            graph1[b][a] = true;
         }
-
-        for (int i = 0; i < m; i++) {
-            int a, b;
+        for (int i = 1; i <= m; i++) {
             cin >> a >> b;
-            s2[a].push_back(b);
-            s2[b].push_back(a);
+            graph2[a][b] = true;
+            graph2[b][a] = true;
         }
 
-        bool hasSameStructure = checkStructure();
+        vector<int> curr = {0};
+        vector<bool> chosen(n + 1);
+        bool ans = false;
+        permutate(curr, chosen, n, ans);
 
-        if (hasSameStructure) {
-            cout << "1";
-        } else {
-            cout << "0";
-        }
+        cout << ans;
     }
-    cout << endl;
-
     return 0;
 }
